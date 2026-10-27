@@ -474,24 +474,24 @@ function renderBallot(){
     return `<button type="button" class="contest" data-race="${s.tab}"><div class="office">${s.office}<small>STATEWIDE</small></div><div class="vs"><div class="cn d"><b class="pt">D</b><span>${s.d[0]}</span></div><div class="cn r"><b class="pt">R</b><span>${s.r[0]}</span></div></div><span class="go">›</span></button>`;
   }).join("");
 }
-$("ballotBox").addEventListener("click",e=>{const b=e.target.closest("[data-race]");if(!b)return;curRace=b.dataset.race;go("candidates");renderPills();document.querySelector(".desk").scrollIntoView({behavior:"smooth"})});
+$("ballotBox").addEventListener("click",e=>{const b=e.target.closest("[data-race]");if(!b)return;curRace=b.dataset.race;go("candidates",true);renderPills();document.querySelector(".desk").scrollIntoView({behavior:"smooth"})});
 
 /* desk panes */
 const PANES=[["quiz","Where you stand"],["claims","Claims vs. record"],["candidates","The candidates"],["myth","Myth or fact"],["vote","How to vote"]];
 $("deskbar").innerHTML=PANES.map(([id,t],i)=>`<button type="button" role="tab" id="t-${id}" data-p="${id}" aria-selected="false"><span class="n">0${i+1}</span>${t}</button>`).join("");
 $("panes").innerHTML=`
- <div class="pane" id="quiz" role="tabpanel" hidden><div class="pane-head"><div><h2>Who's with you?</h2><p>Five statements, each tied to a race on your ballot. Only sourced positions count.</p></div></div><div class="card stepper" id="quizCard"></div></div>
- <div class="pane" id="claims" role="tabpanel" hidden><div class="pane-head"><div><h2>What they say vs. the record</h2><p>Attacks on Doug Jones and Alabama Democrats from Tuberville, his campaign and Barry Moore. Tap a card to check it.</p></div><span class="label" id="claimCount"></span></div><div class="tiles" id="tiles"></div></div>
- <div class="pane" id="candidates" role="tabpanel" hidden><div class="pane-head"><div><h2>The candidates, side by side</h2><p>Every point links to its source.</p></div></div><div class="pills" id="pills" role="tablist"></div><div id="race"></div></div>
- <div class="pane" id="myth" role="tabpanel" hidden><div class="pane-head"><div><h2>Myth or fact?</h2><p>Quick round. See how much of what you've heard holds up.</p></div></div><div class="card stepper" id="mythCard"></div></div>
- <div class="pane" id="vote" role="tabpanel" hidden><div class="pane-head"><div><h2>Make a plan</h2><p>Polls are open 7 a.m. to 7 p.m. on Tuesday, Nov 3. Check ID, absentee and polling-place rules at the official sources.</p></div></div>
+ <div class="pane" id="pane-quiz" role="tabpanel" hidden><div class="pane-head"><div><h2>Who's with you?</h2><p>Five statements, each tied to a race on your ballot. Only sourced positions count.</p></div></div><div class="card stepper" id="quizCard"></div></div>
+ <div class="pane" id="pane-claims" role="tabpanel" hidden><div class="pane-head"><div><h2>What they say vs. the record</h2><p>Attacks on Doug Jones and Alabama Democrats from Tuberville, his campaign and Barry Moore. Tap a card to check it.</p></div><span class="label" id="claimCount"></span></div><div class="tiles" id="tiles"></div></div>
+ <div class="pane" id="pane-candidates" role="tabpanel" hidden><div class="pane-head"><div><h2>The candidates, side by side</h2><p>Every point links to its source.</p></div></div><div class="pills" id="pills" role="tablist"></div><div id="race"></div></div>
+ <div class="pane" id="pane-myth" role="tabpanel" hidden><div class="pane-head"><div><h2>Myth or fact?</h2><p>Quick round. See how much of what you've heard holds up.</p></div></div><div class="card stepper" id="mythCard"></div></div>
+ <div class="pane" id="pane-vote" role="tabpanel" hidden><div class="pane-head"><div><h2>Make a plan</h2><p>Polls are open 7 a.m. to 7 p.m. on Tuesday, Nov 3. Check ID, absentee and polling-place rules at the official sources.</p></div></div>
    <div class="vote"><a class="card" href="https://www.alabamavotes.gov/" target="_blank" rel="noopener"><b>Alabama Votes</b><span>Check registration, see your sample ballot, find your polling place.</span><span class="src">alabamavotes.gov</span></a><a class="card" href="https://vote.gov/register/alabama" target="_blank" rel="noopener"><b>Vote.gov</b><span>Official federal guide to voting in Alabama.</span><span class="src">vote.gov</span></a></div></div>`;
 let curPane="quiz";
-function go(id){ if(!PANES.some(p=>p[0]===id)) id="quiz"; curPane=id;
-  PANES.forEach(([p])=>{$(p).hidden=p!==id;$("t-"+p).setAttribute("aria-selected",p===id)});
-  if(location.hash!=="#"+id) history.replaceState(null,"","#"+id);
+function go(id,setHash){ if(!PANES.some(p=>p[0]===id)) id="quiz"; curPane=id;
+  PANES.forEach(([p])=>{$("pane-"+p).hidden=p!==id;$("t-"+p).setAttribute("aria-selected",p===id)});
+  if(setHash&&location.hash!=="#"+id) history.replaceState(null,"","#"+id);
 }
-$("deskbar").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(b)go(b.dataset.p)});
+$("deskbar").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(b)go(b.dataset.p,true)});
 window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(PANES.some(p=>p[0]===h)){go(h);document.querySelector(".desk").scrollIntoView({behavior:"smooth"})}});
 
 /* candidates */
@@ -565,7 +565,9 @@ $("mythCard").addEventListener("click",e=>{const a=e.target.closest(".ans");if(a
 $("srcCount").textContent=order.length;
 $("srcList").innerHTML=order.map(k=>`<li><a href="${S[k][1]}" target="_blank" rel="noopener">${S[k][0]}</a></li>`).join("");
 renderIntake(); renderQuiz(); renderTiles(); renderMyth();
+try{history.scrollRestoration="manual"}catch(e){}
 go(location.hash.slice(1)||"quiz");
+window.scrollTo(0,0);
 </script>
 
 </body>
