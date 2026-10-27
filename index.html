@@ -21,12 +21,13 @@ body{margin:0}
 /* Layout: an election-night desk. Dark navy board, a clickable county map beside your sample ballot, then a tabbed desk of short interactive panels. Crimson from the state flag marks selection and action. */
 :root{
   --bg:#0B1220; --panel:#111B2E; --panel2:#17243D; --line:#24324D; --ink:#F2F4F8; --muted:#9AA6BC; --faint:#64708A;
-  --crimson:#E04157; --flag:#A8203A; --blue:#6AA6F5; --rep:#B4BDCD; --good:#6AA6F5;
+  --crimson:#E04157; --flag:#A8203A; --red:#C8263F; --blue:#6AA6F5; --rep:#EF6B73; --good:#6AA6F5;
   --ui:"Libre Franklin", "Franklin Gothic Medium", "Helvetica Neue", Arial, sans-serif;
   --serif:"Source Serif 4", Georgia, serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{background:var(--bg)}
 body{color:var(--ink);font:15px/1.55 var(--ui)}
 .gutter{padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px))}
@@ -42,7 +43,7 @@ a:focus-visible,button:focus-visible,select:focus-visible,path:focus-visible{out
 .card{background:var(--panel);border:1px solid var(--line);border-radius:6px}
 
 /* top */
-.topbar{height:4px;background:var(--flag)}
+.topbar{height:4px;background:var(--red)}
 .nameplate{border-bottom:1px solid var(--line)}
 .np{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;font:800 1rem var(--ui);color:var(--ink);text-decoration:none}
@@ -53,15 +54,20 @@ a:focus-visible,button:focus-visible,select:focus-visible,path:focus-visible{out
 @keyframes pulse{70%{box-shadow:0 0 0 8px rgba(224,65,87,0)}100%{box-shadow:0 0 0 0 rgba(224,65,87,0)}}
 
 /* hero */
-.hero{padding-block:36px 24px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px 40px;align-items:end}
-.hero h1{font-size:clamp(2rem,5.2vw,3.4rem);line-height:1.04;font-weight:900}
-.hero h1 u{text-decoration:none;box-shadow:inset 0 -.12em 0 var(--crimson)}
+.hero{padding-block:36px 28px;display:flex;flex-direction:column;gap:20px;position:relative}
+.wall{position:relative;z-index:1}
+html,body{overflow-x:clip}
+body{position:relative}
+.hero-sub{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 40px;align-items:center}
+.hero-sub .lede{max-width:62ch}
+.hero h1{font-family:var(--ui);font-weight:900;font-size:clamp(2.4rem,6.6vw,4.9rem);line-height:1.02;letter-spacing:-.025em}
+.hero h1 em{font-style:normal;color:var(--red)}
 .hero .lede{color:var(--muted);font-size:1.05rem}
 .quick{display:flex;flex-wrap:wrap;gap:8px}
 .btn{display:inline-flex;align-items:center;gap:8px;font:700 .9rem var(--ui);border-radius:4px;padding:10px 16px;cursor:pointer;text-decoration:none;border:1px solid var(--line);background:var(--panel2);color:var(--ink)}
 .btn.primary{background:var(--flag);border-color:var(--flag);color:#fff}
 .btn:hover{filter:brightness(1.15)}
-@media (max-width:760px){.hero{grid-template-columns:1fr}}
+@media (max-width:760px){.hero-sub{grid-template-columns:1fr}}
 
 /* wall: map + ballot */
 .wall{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px;padding-bottom:28px}
@@ -99,6 +105,7 @@ a:focus-visible,button:focus-visible,select:focus-visible,path:focus-visible{out
 .cn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pt{flex:none;font:800 .62rem var(--ui);letter-spacing:.06em;width:20px;height:16px;display:grid;place-items:center;border-radius:2px}
 .d .pt{background:var(--blue);color:var(--bg)} .r .pt{background:var(--rep);color:var(--bg)}
+.who .pt{flex:none;font:800 .62rem var(--ui);width:20px;height:16px;display:grid;place-items:center;border-radius:2px}
 .go{color:var(--faint);font-size:1.1rem}
 .contest.empty{cursor:default}
 .contest.empty .vs{color:var(--muted);font-size:.85rem}
@@ -106,7 +113,7 @@ a:focus-visible,button:focus-visible,select:focus-visible,path:focus-visible{out
 
 /* desk */
 .desk{padding-bottom:40px}
-.deskbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.deskbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(11,18,32,.78);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .deskbar button{flex:none;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);font:700 .88rem var(--ui);padding:14px 14px 11px;cursor:pointer;display:flex;gap:8px;align-items:center}
 .deskbar button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--crimson)}
@@ -134,6 +141,19 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .verdict.fact{color:var(--blue)} .verdict.myth{color:var(--crimson)}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .results{display:flex;flex-direction:column;gap:14px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 28px}
+.rgrid>div{display:flex;flex-direction:column;gap:8px;min-width:0}
+.topline{font-size:1rem}
+.align{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.arow{display:grid;grid-template-columns:minmax(0,8.5rem) minmax(0,1fr) minmax(0,1fr);gap:6px 14px;padding:10px 0;border-bottom:1px solid var(--line);align-items:start}
+.alabel{font:800 .7rem/1.3 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.who{display:flex;gap:8px;align-items:flex-start;min-width:0}
+.who>span{display:flex;flex-direction:column;min-width:0}
+.who .nm{font-weight:700;font-size:.9rem}
+.who .st{font-size:.78rem;line-height:1.35;color:var(--muted)}
+.who.yes .st{color:#7FD3A0} .who.no .st{color:#F2A0A6} .who.none{opacity:.55}
+.who .pt{margin-top:2px}
+@media (max-width:640px){.arow{grid-template-columns:1fr 1fr}.alabel{grid-column:1/-1;padding-top:0}}
 .bar{display:flex;flex-direction:column;gap:6px}
 .bar .row{display:flex;justify-content:space-between;gap:10px;font:700 .9rem var(--ui);font-variant-numeric:tabular-nums}
 .bar .track{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
@@ -195,7 +215,7 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;display:flex;fle
 <body>
 <div class="topbar"></div>
 <header class="nameplate gutter"><div class="wrap np">
-  <a class="brand" href="#"><svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#FFFFFF"/><path d="M0 0L30 20M30 0L0 20" stroke="#A8203A" stroke-width="4"/></svg>Look Closer, Alabama</a>
+  <a class="brand" href="#">Look Closer, Alabama</a>
   <div class="count"><span class="dot"></span><span id="countdown">Election Day: Tue, Nov 3</span></div>
 </div></header>
 
@@ -203,13 +223,11 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;display:flex;fle
 <div class="wrap">
 
 <section class="hero" aria-labelledby="h1">
-  <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
-    <div class="label">Alabama votes Tuesday, November 3</div>
-    <h1 id="h1">Today's conservatism is <u>not</u> Alabama's values.</h1>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
-    <p class="lede">Most Alabamians want rural hospitals kept open and groceries untaxed. What they're getting is culture-war slogans. Tap your county, see your ballot, and check the record in a few minutes.</p>
-    <div class="quick"><a class="btn primary" href="#quiz">Take the 60-second quiz</a><a class="btn" href="#claims">Check the claims</a></div>
+  <div class="label">Alabama votes Tuesday, November 3</div>
+  <h1 id="h1">Today's conservatism is<br><em>not</em> Alabama's values.</h1>
+  <div class="hero-sub">
+    <p class="lede">Most Alabamians want rural hospitals kept open and groceries untaxed. What they're getting is culture-war noise. Skip the slogans: tap your county, see your ballot, and check the record yourself.</p>
+    <div class="quick"><a class="btn primary" href="#quiz">Take the 2-minute quiz</a><a class="btn" href="#claims">Check the claims</a></div>
   </div>
 </section>
 
@@ -240,7 +258,7 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;display:flex;fle
 <details class="sources"><summary>Sources (<span id="srcCount"></span>)</summary><ol id="srcList"></ol></details>
 <footer>
   <p class="motto">Audemus jura nostra defendere. We dare defend our rights.</p>
-  <p><b style="color:var(--ink)">An independent, unofficial voter guide.</b> Not authorized by any candidate or campaign. It has a point of view, and every claim links to its source so you can decide for yourself.</p>
+  <p><b style="color:var(--ink)">An independent, unofficial voter guide.</b> Not authorized by any candidate, campaign or party. It doesn't tell you how to vote in every race. It puts this year's loudest talking points next to the record, and every claim links to its source.</p>
   <p class="src">Last updated October 27, 2026. State legislative and local races are not included.</p>
 </footer>
 </div></div>
@@ -273,6 +291,17 @@ const S = {
   wessrural:["Alabama Political Reporter — Wess criticizes Moore's voting record on rural health (Sep 16, 2026)","https://www.alreporter.com/2026/09/16/wess-highlights-alabamas-rural-healthcare-crisis-criticizes-moores-voting-record/"],
   moore:["Washington Examiner — Barry Moore launches Senate bid","https://www.washingtonexaminer.com/?p=3497159"],
   moore2:["Alabama Political Reporter — Moore launches U.S. Senate bid (Aug 12, 2025)","https://www.alreporter.com/2025/08/12/barry-moore-launches-u-s-senate-bid-vows-to-back-trump-and-fight-d-c-swamp/"],
+  roll:["U.S. House Clerk — Roll Call 145, H.R. 1 (One Big Beautiful Bill Act) passage (May 22, 2025)","https://clerk.house.gov/evs/2025/roll145"],
+  gazv:["Alabama Gazette — Sewell and Figures vote no on the One Big Beautiful Bill Act (Jul 2025)","https://www.alabamagazette.com/story/2025/07/01/news/sewell-and-figures-vote-no-on-the-one-big-beautiful-bill-act/7082.html"],
+  al1:["Alabama Reflector via Yahoo News — Former congressman, military veteran make bids for AL-1 (Oct 22, 2026)","https://www.yahoo.com/news/politics/articles/former-congressman-military-veteran-bids-095907589.html"],
+  clyde:["Clyde Jones for Congress — About","https://clydeforcongress.com/"],
+  al4:["Alabama Reflector voter guide — 4th Congressional District","https://alabamareflector.com/voter-guides/contests/al04/"],
+  al6:["Alabama Reflector voter guide — 6th Congressional District","https://alabamareflector.com/voter-guides/contests/al06/"],
+  bt:["Birmingham Times — Alabama Election 2026: key races and candidates (Oct 2026)","https://www.birminghamtimes.com/2026/10/alabama-election-2026-a-guide-to-key-races-candidates-and-issues/"],
+  yhl:["Yellowhammer News — Tuberville says lottery is 'going to be up to the people' (Jun 3, 2025)","https://yellowhammernews.com/tuberville-say-lottery-in-alabama-is-going-to-be-up-to-the-people"],
+  wahl19:["1819 News — Wahl: 'I would struggle with supporting a clean lottery' (Jan 28, 2026)","https://1819news.com/news/item/wahl-i-would-struggle-with-supporting-a-clean-lottery-opposed-to-increased-casino-gaming"],
+  agabc:["ABC 33/40 — Alabama attorney general candidates discuss priorities (Oct 21, 2026)","https://abc3340.com/news/alabama-news/alabama-attorney-general-candidates-discuss-priorities-ahead-of-election"],
+  rogers:["The Mountain Eagle — Rogers pushes for early voting, tracking of absentee ballots (Feb 4, 2026)","https://www.mountaineagle.com/news/rogers-pushes-for-early-voting-tracking-of-absentee-ballots/article_7a5c75cb-d60d-5103-be7c-53f992752638.html"],
   house:["Wikipedia — 2026 U.S. House elections in Alabama","https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections_in_Alabama"],
   hvg:["Alabama Reflector — Voter guide to Alabama's special primary elections (Aug 10, 2026)","https://alabamareflector.com/2026/08/10/a-voter-guide-to-alabamas-special-primary-elections/"],
   wbhm:["WBHM — 2026 Alabama special congressional primary results (Aug 11, 2026)","https://www.wbhm.org/local-news/2026-08-11/2026-alabama-special-congressional-primary-results"],
@@ -305,14 +334,36 @@ Object.entries(D).forEach(([d,s])=>s.split(" ").forEach(c=>COUNTY[c.replace("_",
 Object.assign(COUNTY,{Elmore:[2,6],Talladega:[3,6],Lauderdale:[4,5],Tuscaloosa:[4,7],Jefferson:[6,7]});
 
 
+const VY="voted for the 2025 budget law", VN="voted against the 2025 budget law";
 const HOUSE = {
- 1:{open:"Open seat; Barry Moore is running for U.S. Senate.", d:["Clyde Jones","Community organizer"], r:["Jerry Carl","Former U.S. representative, 2021–2025"], c:["house","hvg"]},
- 2:{d:["Shomari Figures","Incumbent"], r:["Rhett Marques","State representative since 2018; endorsed by Trump"], c:["house","wbhm"]},
- 3:{d:["Lee McInnis","Retired Defense Intelligence Agency employee"], r:["Mike Rogers","Incumbent"], c:["house"]},
- 4:{d:["Amanda Pusczek","Registered nurse"], r:["Robert Aderholt","Incumbent"], c:["house"]},
- 5:{d:["Andrew Sneed","Mechanical contractor"], r:["Dale Strong","Incumbent"], c:["house"]},
- 6:{d:["Maurice Mercer","Former Pelham city councilman"], r:["Gary Palmer","Incumbent; supports repealing the Affordable Care Act"], c:["house","hvg"]},
- 7:{d:["Terri Sewell","Incumbent"], r:["Ammie Akin","Educator"], c:["house"]},
+ 1:{open:"Open seat; Barry Moore is running for U.S. Senate.", c:["house","hvg"],
+    d:["Clyde Jones","Retired Army First Sergeant (21 years, Bronze Star) and associate minister at Macedonia Missionary Baptist Church", ["Wants Congress to restore the Affordable Care Act premium help that lapsed, saying its loss pushed premiums up"], ["al1","clyde"]],
+    r:["Jerry Carl","Former U.S. representative (2021–2025) and Mobile County commissioner", ["Supports a balanced budget amendment and spending cuts"], ["al1"]],
+    pos:{aca:{d:["a","wants ACA premium help restored",["al1"]]}}},
+ 2:{c:["house","wbhm"],
+    d:["Shomari Figures","Incumbent U.S. representative", ["Voted against the 2025 federal budget law (H.R. 1)"], ["roll","gazv"]],
+    r:["Rhett Marques","State representative since 2018; endorsed by Trump", ["Wants rural broadband and infrastructure investment"], ["hvg"]],
+    pos:{medcut:{d:["a",VN,["roll","gazv"]]}}},
+ 3:{c:["house"],
+    d:["Lee McInnis","Retired Defense Intelligence Agency employee", null, null],
+    r:["Mike Rogers","Incumbent U.S. representative", ["Voted for the 2025 federal budget law (H.R. 1)"], ["roll","gazv"]],
+    pos:{medcut:{r:["d",VY,["roll","gazv"]]}}},
+ 4:{c:["house","al4"],
+    d:["Amanda Pusczek","Registered nurse", ["Supports letting Alabamians enroll in Medicaid expansion directly, without the Legislature's approval"], ["al4"]],
+    r:["Robert Aderholt","Incumbent U.S. representative since 1997", ["Voted for the 2025 federal budget law (H.R. 1)"], ["roll","gazv"]],
+    pos:{medcut:{r:["d",VY,["roll","gazv"]]}, medexp:{d:["a","supports Medicaid expansion",["al4"]]}}},
+ 5:{c:["house"],
+    d:["Andrew Sneed","Mechanical contractor", null, null],
+    r:["Dale Strong","Incumbent U.S. representative", ["Voted for the 2025 federal budget law (H.R. 1)"], ["roll","gazv"]],
+    pos:{medcut:{r:["d",VY,["roll","gazv"]]}}},
+ 6:{c:["house","al6"],
+    d:["Maurice Mercer","Former Pelham city councilman", ["Campaigning on improved access to health care"], ["bt"]],
+    r:["Gary Palmer","Incumbent U.S. representative since 2015", ["Voted for the 2025 federal budget law (H.R. 1)","Has called for repealing the Affordable Care Act"], ["roll","al6"]],
+    pos:{medcut:{r:["d",VY,["roll","gazv"]]}, aca:{r:["d","has called for repealing it",["al6"]]}}},
+ 7:{c:["house","bt"],
+    d:["Terri Sewell","Incumbent U.S. representative since 2011", ["Voted against the 2025 federal budget law (H.R. 1)","Has supported federal investment in rural hospitals"], ["roll","gazv","bt"]],
+    r:["Ammie Akin","Former educator and nonprofit founder", ["Campaign emphasizes improving health care"], ["bt"]],
+    pos:{medcut:{d:["a",VN,["roll","gazv"]]}}},
 };
 const STATE = [
  {office:"U.S. Senate", d:["Everett Wess","Former Midfield municipal judge; attorney and pastor"], r:["Barry Moore","U.S. representative, AL-1"], tab:"sen"},
@@ -333,7 +384,7 @@ const races = [
      pts:[`Running as a "Trump conservative"; says he was the first elected official to endorse Trump in 2016 ${cite("moore")}`,
           `Voted for the One Big Beautiful Bill Act, citing its tax cuts on tips and Social Security ${cite("moore")}`,
           `Launched his campaign vowing to fight "socialists and communists running the Democrat Party" ${cite("moore2")}`]},
-  why:`Wess has spent his life in Alabama courtrooms and Huntsville engineering labs. His race is about whether Alabama's senator backs the hospitals and universities that rural counties depend on.`},
+  why:`The clearest difference is health care. Moore voted for the 2025 federal budget law and its Medicaid changes. Wess says those changes will squeeze rural hospitals. ${cite("roll","wessrural")}`},
  {id:"house", tab:"U.S. House", house:true},
  {id:"gov", tab:"Governor", title:"Governor", note:`Open seat. Gov. Kay Ivey is term-limited. ${cite("bp")}`,
   d:{name:"Doug Jones", bio:`Former U.S. senator (2018–2021) and federal prosecutor. Grew up in Fairfield, son of a steelworker. ${cite("sandmtn")}`,
@@ -347,8 +398,9 @@ const races = [
           `Wants to end the grocery tax and cut the income tax ${cite("ms")}`,
           `Says the state cannot afford Medicaid expansion ${cite("ms")}`,
           `Promotes AI and data center development as part of the economic future ${cite("apr")}`,
+          `Says a state lottery is "up to the people" to decide in a referendum ${cite("yhl")}`,
           `Has said he sees no reason to debate Jones ${cite("ms","wbrc")}`]},
-  why:`Both candidates want to end the grocery tax. The difference is what comes next: Jones pairs it with Medicaid expansion and a lottery vote, two ideas that polls have shown majorities of Alabamians support across party lines. ${cite("poll")}`,
+  why:`Both candidates want to end the grocery tax. They split on Medicaid expansion and a lottery vote, two ideas polls have shown majorities of Alabamians support across party lines. ${cite("poll")}`,
   foot:`Ronald Burnette Jr. is running as an independent write-in. ${cite("bp")}`},
  {id:"ltg", tab:"Lt. Governor", title:"Lieutenant Governor", note:`Open seat. ${cite("ltg")}`,
   d:{name:"Phillip Ensler", bio:`State representative from Montgomery; former senior policy advisor to the City of Montgomery. ${cite("waff")}`,
@@ -358,33 +410,54 @@ const races = [
           `Pitches a coalition of Democrats, Republicans and independents ${cite("ensler")}`]},
   r:{name:"John Wahl", bio:`Former chair of the Alabama Republican Party; endorsed by President Trump. ${cite("adn","ltg")}`,
      pts:[`Broad priorities: more job and education opportunities, less crime, affordability ${cite("ltg")}`,
+          `Wants the grocery tax phased out "as soon as possible" ${cite("ltg")}`,
+          `Says he "struggles" with whether he would support a clean lottery ${cite("wahl19")}`,
           `A residency challenge was filed in January; the state party dismissed it ${cite("adn")}`]},
-  why:`Ensler's priorities are the bills he already filed in the House. Wahl comes from running the party, not the Legislature.`},
+  why:`Ensler's priorities mirror bills he filed as a legislator, though the office itself has little power to pass them. Wahl's priorities are broader, and he comes from running the state Republican Party. ${cite("ltg")}`},
  {id:"ag", tab:"Attorney General", title:"Attorney General", note:`Open seat. Steve Marshall is term-limited.`,
   d:{name:"Jeff McLaughlin", bio:`Guntersville attorney; state representative 2001–2011. ${cite("mcl")}`,
      pts:[`Refused campaign contributions as a legislator and funded his own races ${cite("mcl")}`,
           `Introduced a ban on PAC-to-PAC transfers every session; it passed the House each year and died in the Senate ${cite("mcl")}`,
-          `Running the same no-donations campaign this year ${cite("mclr")}`]},
+          `Running the same no-donations campaign this year ${cite("mclr")}`,
+          `Would push the office toward consumer protection, including representing utility customers on power bills ${cite("agabc")}`,
+          `Says prisons need reform, citing overcrowding and long sentences for nonviolent offenders ${cite("agabc")}`]},
   r:{name:"Katherine Robertson", bio:`Chief counsel to Attorney General Steve Marshall since 2017. ${cite("rob")}`,
      pts:[`Describes herself as a steadfast Trump supporter who will fight the "fanatical left" ${cite("rob")}`,
+          `Backs "honest sentencing" and tougher punishment for gang and violent offenders; won't "concede that we have overcrowded prisons" ${cite("agabc")}`,
           `Spent millions of dollars winning the nomination ${cite("mclr")}`]},
-  why:`If you think money runs Montgomery, McLaughlin is the rare candidate who spent a decade refusing to take any.`},
+  why:`One candidate refused all campaign contributions for a decade in the Legislature. The other spent millions winning the nomination. ${cite("mcl","mclr")}`},
  {id:"sos", tab:"Secretary of State", title:"Secretary of State", note:`Runs Alabama's elections and business records. Open seat. ${cite("sos")}`,
   d:{name:"Wayne Rogers", bio:`Attorney, former federal prosecutor, and first-time candidate. ${cite("sosadn","sos")}`,
-     pts:[`Has raised about $50,000 in a race where his opponent has raised over $740,000 ${cite("soswiki")}`]},
+     pts:[`Wants weekend early voting and barcode tracking of absentee ballots ${cite("rogers")}`,
+          `Has raised about $50,000 in a race where his opponent has raised over $740,000 ${cite("soswiki")}`]},
   r:{name:"Caroleene Dobson", bio:`Montgomery real estate attorney raised on a Monroe County cattle farm; 2024 GOP nominee for Congress in AL-2. ${cite("dob")}`,
      pts:[`Wants an election crimes division modeled on Florida's and statewide post-election audits ${cite("dob")}`,
           `Pledges to cut fees on businesses and advocate for President Trump's election proposals ${cite("dob")}`]},
-  why:`Rogers is a former federal prosecutor running on a shoestring. This office counts your vote.`}
+  why:`This office runs your elections. Dobson has raised roughly 15 times what Rogers has. ${cite("soswiki")}`}
 ];
 
-const RACE = {gov:{label:"Governor", d:"Doug Jones", r:"Tommy Tuberville"}, sen:{label:"U.S. Senate", d:"Everett Wess", r:"Barry Moore"}};
+const VOTEY=["d","voted for the law",["roll","gazv"]], VOTEN=["a","voted against the law",["roll","gazv"]];
 const stmts = [
- {s:"Alabama should expand Medicaid so working families have coverage and rural hospitals stay open.", race:"gov", agree:"d", c:["apr","ms"]},
- {s:"Alabama should stop taxing groceries.", race:"gov", agree:"both", c:["refl","ms"]},
- {s:"New AI data centers should wait until there are rules protecting ratepayers and local communities.", race:"gov", agree:"d", c:["apr"]},
- {s:"Candidates for governor should debate each other in public before the election.", race:"gov", agree:"d", c:["ms","x1819"]},
- {s:"Congress was wrong to cut Medicaid in the 2025 federal budget law.", race:"sen", agree:"d", c:["wessrural","moore"]},
+ {id:"medexp", s:"Alabama should expand Medicaid so working families have coverage and rural hospitals stay open.", pos:{
+   "Doug Jones":["a",null,["apr"]], "Tommy Tuberville":["d","says the state can't afford it",["ms"]], "Phillip Ensler":["a",null,["ltg"]],
+   "Amanda Pusczek":["a","backs letting Alabamians enroll directly",["al4"]]}},
+ {id:"grocery", s:"Alabama should stop taxing groceries.", pos:{
+   "Doug Jones":["a",null,["refl"]], "Tommy Tuberville":["a",null,["ms"]], "Phillip Ensler":["a",null,["ltg"]], "John Wahl":["a","wants it phased out \"as soon as possible\"",["ltg"]]}},
+ {id:"lottery", s:"Alabama voters should get to vote on a state lottery.", pos:{
+   "Doug Jones":["a",null,["refl"]], "Tommy Tuberville":["a","says it's \"up to the people\"",["yhl"]], "Phillip Ensler":["a",null,["ltg"]], "John Wahl":["u","says he \"struggles\" with supporting one",["wahl19"]]}},
+ {id:"medcut", s:"Congress was wrong to cut Medicaid in the 2025 federal budget law.", pos:{
+   "Everett Wess":["a",null,["wessrural"]], "Barry Moore":VOTEY, "Shomari Figures":VOTEN, "Terri Sewell":VOTEN,
+   "Mike Rogers":VOTEY, "Robert Aderholt":VOTEY, "Dale Strong":VOTEY, "Gary Palmer":VOTEY}},
+ {id:"aca", s:"Congress should keep the Affordable Care Act, not repeal it.", pos:{
+   "Clyde Jones":["a","wants ACA premium help restored",["al1"]], "Gary Palmer":["d","has called for repealing it",["al6"]]}},
+ {id:"data", s:"New AI data centers should wait until there are rules protecting ratepayers and local communities.", pos:{
+   "Doug Jones":["a",null,["apr"]], "Tommy Tuberville":["d","promotes data center growth",["apr"]], "Phillip Ensler":["a","backs a moratorium",["ltg"]]}},
+ {id:"prisons", s:"Alabama's prisons are overcrowded, and too many nonviolent offenders serve long sentences.", pos:{
+   "Jeff McLaughlin":["a",null,["agabc"]], "Katherine Robertson":["d","won't \"concede that we have overcrowded prisons\"",["agabc"]]}},
+ {id:"fraudunit", s:"Alabama should create a special unit to investigate and prosecute election fraud.", pos:{
+   "Caroleene Dobson":["a",null,["dob"]]}},
+ {id:"early", s:"Alabama should offer early voting.", pos:{
+   "Wayne Rogers":["a","wants weekend early voting",["rogers"]]}},
 ];
 
 const claims = [
@@ -425,7 +498,7 @@ const $ = id => document.getElementById(id);
 
 /* countdown */
 (function(){
-  const now=new Date(), ed=new Date(2026,10,3), days=Math.ceil((ed-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);
+  const now=new Date(), ed=new Date(2026,10,3), days=Math.round((ed-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);
   $("countdown").innerHTML = days>1?`<b>${days} days</b> until Election Day · Nov 3`:days===1?`Election Day is <b>tomorrow</b>`:days===0?`<b>Election Day is today</b> · polls 7 a.m.–7 p.m.`:`Election Day was Nov 3`;
 })();
 
@@ -462,7 +535,7 @@ function renderIntake(){
     splitEl.innerHTML=`<span>${county} is split.</span>${ds.map(d=>`<button type="button" class="chip" data-d="${d}" aria-pressed="${district===d}">District ${d}</button>`).join("")}<a class="chip" href="https://www.alabamavotes.gov/" target="_blank" rel="noopener">Look it up</a>`;
   } else { splitEl.hidden=true; splitEl.innerHTML=""; district=ds?ds[0]:0; }
   $("where").textContent = county?`${county} County${district?` · District ${district}`:""}`:"Statewide";
-  renderBallot(); renderPills();
+  renderBallot(); renderPills(); if(typeof renderQuiz==="function"&&$("quizCard")){const n=active().length; if(qi>n)qi=n; renderQuiz();}
 }
 function renderBallot(){
   $("ballotBox").innerHTML = STATE.map(s=>{
@@ -480,8 +553,8 @@ $("ballotBox").addEventListener("click",e=>{const b=e.target.closest("[data-race
 const PANES=[["quiz","Where you stand"],["claims","Claims vs. record"],["candidates","The candidates"],["myth","Myth or fact"],["vote","How to vote"]];
 $("deskbar").innerHTML=PANES.map(([id,t],i)=>`<button type="button" role="tab" id="t-${id}" data-p="${id}" aria-selected="false"><span class="n">0${i+1}</span>${t}</button>`).join("");
 $("panes").innerHTML=`
- <div class="pane" id="pane-quiz" role="tabpanel" hidden><div class="pane-head"><div><h2>Who's with you?</h2><p>Five statements, each tied to a race on your ballot. Only sourced positions count.</p></div></div><div class="card stepper" id="quizCard"></div></div>
- <div class="pane" id="pane-claims" role="tabpanel" hidden><div class="pane-head"><div><h2>What they say vs. the record</h2><p>Attacks on Doug Jones and Alabama Democrats from Tuberville, his campaign and Barry Moore. Tap a card to check it.</p></div><span class="label" id="claimCount"></span></div><div class="tiles" id="tiles"></div></div>
+ <div class="pane" id="pane-quiz" role="tabpanel" hidden><div class="pane-head"><div><h2>Who's with you?</h2><p id="quizIntro">Agree or disagree, then see where every candidate on your ballot stands. Only positions on the public record count.</p></div></div><div class="card stepper" id="quizCard"></div></div>
+ <div class="pane" id="pane-claims" role="tabpanel" hidden><div class="pane-head"><div><h2>What they say vs. the record</h2><p>The loudest attack lines of this campaign, checked against the public record. Tap a card to check it.</p></div><span class="label" id="claimCount"></span></div><div class="tiles" id="tiles"></div></div>
  <div class="pane" id="pane-candidates" role="tabpanel" hidden><div class="pane-head"><div><h2>The candidates, side by side</h2><p>Every point links to its source.</p></div></div><div class="pills" id="pills" role="tablist"></div><div id="race"></div></div>
  <div class="pane" id="pane-myth" role="tabpanel" hidden><div class="pane-head"><div><h2>Myth or fact?</h2><p>Quick round. See how much of what you've heard holds up.</p></div></div><div class="card stepper" id="mythCard"></div></div>
  <div class="pane" id="pane-vote" role="tabpanel" hidden><div class="pane-head"><div><h2>Make a plan</h2><p>Polls are open 7 a.m. to 7 p.m. on Tuesday, Nov 3. Check ID, absentee and polling-place rules at the official sources.</p></div></div>
@@ -497,13 +570,14 @@ window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(PANE
 /* candidates */
 let curRace="gov";
 function cand(c,side){return `<div class="cand ${side}"><div class="party">${side==="d"?"Democrat":"Republican"}</div><h3>${c.name}</h3><p class="bio">${c.bio}</p>${c.pts?`<ul>${c.pts.map(p=>`<li>${p}</li>`).join("")}</ul>`:""}</div>`}
+function hcand(x,side){return cand({name:x[0],bio:x[1]+(x[3]?" "+cite(...x[3]):""),pts:x[2]||["No detailed policy positions found in our sources."]},side)}
 function renderPills(){
   $("pills").innerHTML=races.map(r=>`<button type="button" role="tab" data-r="${r.id}" aria-selected="${r.id===curRace}">${r.house&&district?`U.S. House · ${district}`:r.tab}</button>`).join("");
   const r=races.find(x=>x.id===curRace), el=$("race");
   if(r.house){
     if(!district){el.innerHTML=`<div class="card race"><div class="race-head"><h3>U.S. House</h3><p style="color:var(--muted)">Tap your county on the map to see your district's race.</p></div></div>`;return}
     const h=HOUSE[district];
-    el.innerHTML=`<div class="card race"><div class="race-head"><span class="label">Your district</span><h3>U.S. House · District ${district}</h3><p class="src">${h.open||"Lines were redrawn for 2026."} ${cite("map",...h.c)}</p></div><div class="pair">${cand({name:h.d[0],bio:h.d[1]},"d")}${cand({name:h.r[0],bio:h.r[1]},"r")}</div></div>`;return;
+    el.innerHTML=`<div class="card race"><div class="race-head"><span class="label">Your district</span><h3>U.S. House · District ${district}</h3><p class="src">${h.open||"Lines were redrawn for 2026."} ${cite("map",...h.c)}</p></div><div class="pair">${hcand(h.d,"d")}${hcand(h.r,"r")}</div></div>`;return;
   }
   el.innerHTML=`<div class="card race"><div class="race-head"><span class="label">Statewide</span><h3>${r.title}</h3><p class="src">${r.note}</p></div><div class="pair">${cand(r.d,"d")}${cand(r.r,"r")}</div><div class="why"><b>Look closer</b><p>${r.why}</p></div>${r.foot?`<div class="race-foot"><p class="src">${r.foot}</p></div>`:""}</div>`;
 }
@@ -511,32 +585,52 @@ $("pills").addEventListener("click",e=>{const b=e.target.closest("[data-r]");if(
 
 /* quiz (one at a time) */
 let qi=0; const vAns={};
-function sides(st,v){const R=RACE[st.race];
-  if(st.agree==="both") return `<b>${R.label}:</b> ${R.d} and ${R.r} both want this. Common ground.`;
-  const w=(v?st.agree==="d":st.agree!=="d")?R.d:R.r, o=w===R.d?R.r:R.d;
-  return `<b>${R.label}:</b> ${w} is with you. ${o} is not.`}
-const prog=(n,i,done)=>`<div class="prog">${Array.from({length:n},(_,k)=>`<i class="${k<i||done[k]!==undefined&&k!==i?"on":""} ${k===i?"cur":""}"></i>`).join("")}</div>`;
+function ballotRaces(){ // [{label,d,r}] in ballot order, for the current county
+  const out=[];
+  STATE.forEach(x=>{ if(x.house){ if(district){const h=HOUSE[district]; out.push({label:`U.S. House · District ${district}`,d:h.d[0],r:h.r[0]})} }
+    else out.push({label:x.office,d:x.d[0],r:x.r[0]}) });
+  return out;
+}
+const onBallot=()=>new Set(ballotRaces().flatMap(r=>[r.d,r.r]));
+const active=()=>{const b=onBallot();return stmts.filter(st=>Object.keys(st.pos).some(n=>b.has(n)))};
+function chip(name,side,x,me){
+  if(!x) return `<span class="who ${side} none"><b class="pt">${side==="d"?"D":"R"}</b><span><span class="nm">${name}</span><span class="st">No public position</span></span></span>`;
+  const k=x[0]==="u"?"und":x[0]===me?"yes":"no", st=x[0]==="u"?"Undecided":x[0]===me?"With you":"Not with you";
+  return `<span class="who ${side} ${k}"><b class="pt">${side==="d"?"D":"R"}</b><span><span class="nm">${name}</span><span class="st">${k==="yes"?"✓ ":k==="no"?"✕ ":""}${st}${x[1]?` · ${x[1]}`:""} ${cite(...x[2])}</span></span></span>`;
+}
+function sides(st,v){
+  const me=v?"a":"d";
+  return `<div class="align">${ballotRaces().map(r=>`<div class="arow"><span class="alabel">${r.label}</span>${chip(r.d,"d",st.pos[r.d],me)}${chip(r.r,"r",st.pos[r.r],me)}</div>`).join("")}</div>`;
+}
+const prog=(n,i)=>`<div class="prog">${Array.from({length:n},(_,k)=>`<i class="${k<i?"on":""} ${k===i?"cur":""}"></i>`).join("")}</div>`;
 function renderQuiz(){
-  const el=$("quizCard");
-  if(qi>=stmts.length){
-    const t={gov:{d:0,r:0,n:0},sen:{d:0,r:0,n:0}};
-    Object.entries(vAns).forEach(([i,v])=>{const st=stmts[i],T=t[st.race];T.n++;if(st.agree==="both"){if(v){T.d++;T.r++}}else if(v===(st.agree==="d"))T.d++;else T.r++});
-    const bar=(name,side,sc,tot)=>`<div class="bar ${side}"><div class="row"><span>${name}</span><span>${sc} of ${tot}</span></div><div class="track"><div class="fill" data-w="${tot?Math.round(sc/tot*100):0}"></div></div></div>`;
-    const blk=k=>t[k].n?`<div class="label">${RACE[k].label}</div>${bar(RACE[k].d,"d",t[k].d,t[k].n)}${bar(RACE[k].r,"r",t[k].r,t[k].n)}`:"";
-    el.innerHTML=`<div class="results"><div class="label">Your ballot, matched</div>${blk("gov")}${blk("sen")}
+  const el=$("quizCard"), list=active();
+  if(qi>=list.length){
+    const sc={}; ballotRaces().forEach(r=>[r.d,r.r].forEach(n=>sc[n]={m:0,n:0}));
+    list.forEach(st=>{const v=vAns[st.id]; if(v===undefined) return; const me=v?"a":"d";
+      Object.entries(st.pos).forEach(([n,x])=>{ if(!sc[n]||x[0]==="u") return; sc[n].n++; if(x[0]===me) sc[n].m++; })});
+    const bar=(name,side)=>{const t=sc[name];return t.n?`<div class="bar ${side}"><div class="row"><span>${name}</span><span>${t.m} of ${t.n}</span></div><div class="track"><div class="fill" data-w="${Math.round(t.m/t.n*100)}"></div></div></div>`
+      :`<div class="bar ${side}"><div class="row"><span>${name}</span><span style="color:var(--faint)">No positions on record</span></div><div class="track"></div></div>`};
+    const top=Object.entries(sc).filter(([n,t])=>t.n>=2).sort((a,b)=>b[1].m/b[1].n-a[1].m/a[1].n||b[1].n-a[1].n).slice(0,3).filter(([n,t])=>t.m>0);
+    el.innerHTML=`<div class="results"><div class="label" style="color:var(--ink)">Your ballot, matched</div>
+      ${top.length?`<p class="topline">Most in line with you: ${top.map(([n,t])=>`<b>${n}</b> (${t.m} of ${t.n})`).join(", ")}</p>`:""}
+      <div class="rgrid">${ballotRaces().map(r=>`<div><div class="label">${r.label}</div>${bar(r.d,"d")}${bar(r.r,"r")}</div>`).join("")}</div>
+      ${district?"":`<p class="src">Tap your county on the map to add your U.S. House race.</p>`}
+      <p class="src">Scores count only positions on the public record. A candidate with no stated position isn't counted for or against you.</p>
       <div class="nav"><button type="button" class="btn" id="qRestart">Start over</button><span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="src" id="copyMsg"></span><button type="button" class="btn primary" id="copyBtn">Copy link to share</button></span></div></div>`;
     requestAnimationFrame(()=>el.querySelectorAll(".fill").forEach(f=>f.style.width=f.dataset.w+"%"));
     $("qRestart").onclick=()=>{qi=0;Object.keys(vAns).forEach(k=>delete vAns[k]);renderQuiz()};
     $("copyBtn").onclick=async()=>{const url=location.href.split("#")[0];try{await navigator.clipboard.writeText(url);$("copyMsg").textContent="Link copied"}catch(e){$("copyMsg").textContent=url}};
     return;
   }
-  const st=stmts[qi], v=vAns[qi];
-  el.innerHTML=`${prog(stmts.length,qi,vAns)}<div style="display:flex;justify-content:space-between;gap:8px"><span class="label">${RACE[st.race].label}</span><span class="label">${qi+1} / ${stmts.length}</span></div>
+  const st=list[qi], v=vAns[st.id];
+  el.innerHTML=`${prog(list.length,qi)}<div style="display:flex;justify-content:space-between;gap:8px"><span class="label">Where you stand</span><span class="label">${qi+1} / ${list.length}</span></div>
    <div class="stmt">${st.s}</div>
    <div class="answers"><button type="button" class="ans" data-v="1" aria-pressed="${v===true}" ${v!==undefined?"disabled":""}><i></i>Agree</button><button type="button" class="ans" data-v="0" aria-pressed="${v===false}" ${v!==undefined?"disabled":""}><i></i>Disagree</button></div>
-   ${v===undefined?"":`<div class="reveal"><p>${sides(st,v)} ${cite(...st.c)}</p></div><div class="nav"><span></span><button type="button" class="btn primary" id="qNext">${qi===stmts.length-1?"See your results":"Next"} →</button></div>`}`;
+   ${v===undefined?"":`${sides(st,v)}<div class="nav"><span></span><button type="button" class="btn primary" id="qNext">${qi===list.length-1?"See your results":"Next"} →</button></div>`}
+   ${district||qi?"":`<p class="src">Tap your county on the map first to include your U.S. House race.</p>`}`;
 }
-$("quizCard").addEventListener("click",e=>{const a=e.target.closest(".ans");if(a&&vAns[qi]===undefined){vAns[qi]=a.dataset.v==="1";renderQuiz();return}if(e.target.closest("#qNext")){qi++;renderQuiz()}});
+$("quizCard").addEventListener("click",e=>{const st=active()[qi];const a=e.target.closest(".ans");if(a&&st&&vAns[st.id]===undefined){vAns[st.id]=a.dataset.v==="1";renderQuiz();return}if(e.target.closest("#qNext")){qi++;renderQuiz()}});
 
 /* claims tiles */
 const open=new Set();
